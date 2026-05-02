@@ -1,0 +1,42 @@
+services:
+  backend:
+    container_name: kupipodariday-backend
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    image: backend
+    ports:
+      - 4000:3001
+    env_file: .env
+    networks:
+      - internal_network
+
+  frontend:
+    container_name: kupipodariday-frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    image: frontend
+    ports:
+      - 8081:80
+    env_file: .env
+    networks:
+      - external_network
+
+  database:
+    container_name: kupipodariday-postgres
+    image: postgres:14-alpine
+    env_file: .env
+    volumes:
+      - postgres_data:${PGDATA}
+    networks:
+      - internal_network
+
+volumes:
+  postgres_data:
+
+networks:
+  internal_network:
+    driver: bridge
+  external_network:
+    driver: bridge
